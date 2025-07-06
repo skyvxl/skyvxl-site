@@ -1,0 +1,144 @@
+.game-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+}
+
+.game-stats {
+  display: flex;
+  gap: 30px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  color: var(--primary-color);
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 0 10px var(--primary-color);
+}
+
+.game-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.game-btn {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.game-btn:hover {
+  background: var(--primary-color);
+  color: var(--bg-dark);
+  transform: scale(1.05);
+}
+
+.game-canvas {
+  width: 100%;
+  height: 600px;
+  background: #0a0a0a;
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+  image-rendering: pixelated;
+}
+
+.game-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(10, 10, 10, 0.95);
+  border: 2px solid var(--primary-color);
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 50px rgba(0, 255, 136, 0.5);
+}
+
+.game-overlay h3 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  text-shadow: 0 0 20px var(--primary-color);
+}
+
+.game-overlay p {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--text-secondary);
+}
+
+.controls-info {
+  font-size: 1rem !important;
+  line-height: 1.5;
+  margin: 20px 0;
+}
+
+.start-btn {
+  background: var(--primary-color);
+  color: var(--bg-dark);
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  margin-top: 20px;
+}
+
+.start-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px var(--primary-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .game-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .game-stats {
+    gap: 20px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  .game-canvas {
+    height: 400px;
+  }
+}

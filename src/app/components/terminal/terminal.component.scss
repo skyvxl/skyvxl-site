@@ -1,0 +1,151 @@
+.terminal-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #1a1a1a;
+  border: 1px solid #00ff88;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+  font-family: "Courier New", monospace;
+}
+
+.terminal-header {
+  background: #2a2a2a;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #00ff88;
+}
+
+.terminal-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.terminal-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+}
+
+.terminal-button.red {
+  background: #ff5f56;
+}
+
+.terminal-button.yellow {
+  background: #ffbd2e;
+}
+
+.terminal-button.green {
+  background: #27c93f;
+}
+
+.terminal-title {
+  color: #00ff88;
+  font-size: 14px;
+}
+
+.terminal-body {
+  padding: 20px;
+  height: 400px;
+  overflow-y: auto;
+  background: #0a0a0a;
+}
+
+.terminal-output {
+  margin-bottom: 10px;
+}
+
+.output-line {
+  margin-bottom: 5px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.output-line.command-line {
+  color: #00ff88;
+}
+
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+}
+
+.prompt {
+  color: #00ff88;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.terminal-suggestions {
+  position: absolute;
+  bottom: 60px;
+  left: 20px;
+  background: #1a1a1a;
+  border: 1px solid #00ff88;
+  padding: 10px;
+  display: flex;
+  gap: 15px;
+}
+
+.suggestion {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Custom scrollbar */
+.terminal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+  background: #00ff88;
+  border-radius: 4px;
+}
+
+/* Typing animation */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Glowing cursor */
+.terminal-input::after {
+  content: "█";
+  color: #00ff88;
+  animation: cursor-blink 1s infinite;
+}
+
+@keyframes cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}

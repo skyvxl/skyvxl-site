@@ -1,0 +1,21 @@
+<div class="three-container" #sceneContainer>
+  <div class="scene-controls">
+    <button (click)="toggleRotation()" class="control-btn">
+      <i
+        class="fas"
+        [class.fa-pause]="isRotating"
+        [class.fa-play]="!isRotating"
+      ></i>
+    </button>
+    <button (click)="changeGeometry()" class="control-btn">
+      <i class="fas fa-cube"></i>
+    </button>
+    <button (click)="toggleWireframe()" class="control-btn">
+      <i class="fas fa-border-none"></i>
+    </button>
+  </div>
+  <div class="scene-info">
+    <p>Click and drag to rotate</p>
+    <p>Scroll to zoom</p>
+  </div>
+</div>

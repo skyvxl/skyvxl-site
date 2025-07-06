@@ -1,0 +1,66 @@
+<div class="skills-container">
+  <div class="skills-header">
+    <div class="filter-buttons">
+      @for (cat of categories; track $index) {
+      <button
+        (click)="filterByCategory(cat)"
+        [class.active]="selectedCategory === cat"
+        class="filter-btn"
+      >
+        {{ cat }}
+      </button>
+      }
+    </div>
+  </div>
+
+  <div class="skills-visualization">
+    <canvas #skillsCanvas></canvas>
+
+    <div class="skill-nodes">
+      @for (skill of filteredSkills; track $index) {
+      <div
+        class="skill-node"
+        [style.left.px]="skill.x"
+        [style.top.px]="skill.y"
+        [class.highlighted]="hoveredSkill === skill"
+        (mouseenter)="onSkillHover(skill)"
+        (mouseleave)="onSkillLeave()"
+      >
+        <div class="skill-content">
+          <span class="skill-name">{{ skill.name }}</span>
+          <div class="skill-level">
+            <div class="level-bar" [style.width.%]="skill.level"></div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    @if (hoveredSkill) {
+    <div
+      class="skill-tooltip"
+      [style.left.px]="tooltipX"
+      [style.top.px]="tooltipY"
+    >
+      <h4>{{ hoveredSkill.name }}</h4>
+      <p>Level: {{ hoveredSkill.level }}%</p>
+      <p>{{ hoveredSkill.description }}</p>
+    </div>
+    }
+  </div>
+
+  <div class="skills-stats">
+    <div class="stat-card">
+      <h3>{{ totalSkills }}</h3>
+      <p>Total Skills</p>
+    </div>
+    <div class="stat-card">
+      <h3>{{ averageLevel }}%</h3>
+      <p>Average Level</p>
+    </div>
+    <div class="stat-card">
+      <h3>{{ categories.length }}</h3>
+      <p>Categories</p>
+    </div>
+  </div>
+</div>

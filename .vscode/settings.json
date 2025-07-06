@@ -1,0 +1,11 @@
+{
+  "typescript.tsserver.maxTsServerMemory": 8192,
+  "commentTranslate.targetLanguage": "ru",
+  "angular-schematics.schematicsDefaultOptions": {
+    "angular-*": {
+      "externalTemplate": true,
+      "style": "scss"
+    }
+  },
+  "explorer.compactFolders": false
+}
