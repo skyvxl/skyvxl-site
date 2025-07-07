@@ -21,7 +21,7 @@ export class LanyardService {
     },
   };
 
-  private heartbeat_interval: number = 30000;
+  private heartbeat_interval = 30000;
   private heartbeat: any;
 
   private lanyardData = new Subject<Lanyard>();

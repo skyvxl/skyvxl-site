@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { TerminalComponent } from './components/terminal/terminal.component';
 import { SecretCodeService } from './services/SecretCode.service';
 import { ThreeSceneComponent } from './components/three-scene/three-scene.component';
@@ -7,6 +7,14 @@ import { MiniGameComponent } from './components/mini-game/mini-game.component';
 import { SocialLinksComponent } from './components/social-links/social-links.component';
 import { GlitchTextComponent } from './components/glitch-text/glitch-text.component';
 import { CursorService } from './services/Cursor.service';
+
+interface Project {
+  title: string;
+  description: string;
+  image: string;
+  tech: string[];
+  link?: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -22,6 +30,9 @@ import { CursorService } from './services/Cursor.service';
   styleUrl: './app.scss',
 })
 export class App implements OnInit, OnDestroy {
+  private secretCodeService = inject(SecretCodeService);
+  private cursorService = inject(CursorService);
+
   isMatrixMode = false;
   showEasterEgg = false;
   isLoading = true;
@@ -30,7 +41,7 @@ export class App implements OnInit, OnDestroy {
   typedText = '';
   currentAsciiArt = '';
 
-  projects = [
+  projects: Project[] = [
     {
       title: 'Portfolio Website',
       description: 'Interactive visualization of portfolio items',
@@ -75,11 +86,6 @@ export class App implements OnInit, OnDestroy {
     |__|__|_____|_____||_____|
     `,
   ];
-
-  constructor(
-    private secretCodeService: SecretCodeService,
-    private cursorService: CursorService
-  ) {}
 
   ngOnInit() {
     this.initializeApp();
@@ -164,7 +170,7 @@ export class App implements OnInit, OnDestroy {
     }
   }
 
-  openProject(project: any) {
+  openProject(project: Project) {
     window.open('https://' + project.link, '_blank');
   }
 

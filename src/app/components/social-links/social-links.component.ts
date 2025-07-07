@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { LanyardService } from '../../services/Lanyard.service';
 import { Activity, Lanyard } from '../../models/lanyard-profile.model';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -21,11 +26,14 @@ interface SocialLink {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SocialLinksComponent implements OnInit {
+  private lanyardService = inject(LanyardService);
+  private timestampsService = inject(TimestampsService);
+
   ProfileId = '1101222625956597871';
   lanyardData!: Lanyard | null;
   lanyardActivities: Activity[] = [];
   spotifyActivityIndex: number | null = null;
-  statusColor: string = '#43b581';
+  statusColor = '#43b581';
   percentage = 0;
   subscriptions$: Subscription[] = [];
   apiUrl = 'https://camilo404.azurewebsites.net/v1/'; // sorry for this, I couldn't find another free API
@@ -65,17 +73,11 @@ export class SocialLinksComponent implements OnInit {
     message: '',
   };
 
-  constructor(
-    private lanyardService: LanyardService,
-    private timestampsService: TimestampsService
-  ) {}
-
   async ngOnInit() {
     await this.getLanyardData();
     this.spotifyActivityIndex = this.lanyardActivities.findIndex(
-      (activity) => activity.name === 'Spotify'
+      (activity) => activity.name === 'Spotify',
     );
-    console.log(this.lanyardActivities);
   }
 
   public getLanyardData(): void {
@@ -100,14 +102,14 @@ export class SocialLinksComponent implements OnInit {
               this.timestampsService
                 .getProgressPercentage(
                   activity.timestamps.start,
-                  activity.timestamps.end
+                  activity.timestamps.end,
                 )
                 .subscribe({
                   next: (percentage) => {
                     console.log(percentage);
                     this.percentage = percentage;
                   },
-                })
+                }),
             );
 
             this.subscriptions$.push(
@@ -117,12 +119,12 @@ export class SocialLinksComponent implements OnInit {
                   next: (timeElapsed) => {
                     activity.timestamps!.start = timeElapsed;
                   },
-                })
+                }),
             );
 
             activity.timestamps!.end = this.timestampsService.getTotalDuration(
               activity.timestamps.start,
-              activity.timestamps.end
+              activity.timestamps.end,
             );
           }
 
@@ -134,7 +136,7 @@ export class SocialLinksComponent implements OnInit {
                   next: (timeElapsed) => {
                     activity.timestamps!.start = timeElapsed;
                   },
-                })
+                }),
             );
           }
         });

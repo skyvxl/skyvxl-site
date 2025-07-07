@@ -32,7 +32,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
   historyIndex = -1;
   suggestions: string[] = [];
 
-  private commands: { [key: string]: Command } = {
+  private commands: Record<string, Command> = {
     help: {
       name: 'help',
       description: 'Show available commands',
@@ -118,7 +118,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
       name: 'rm',
       description: 'Dangerously remove everything (…or not)',
       action: () => [
-        '❌ Hah! Nice try, but you can\'t delete my code that easily!',
+        "❌ Hah! Nice try, but you can't delete my code that easily!",
         '    Type "sudo rm -rf /" if you dare (but I won\'t let you)!',
       ],
     },
@@ -177,7 +177,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
       const result = this.commands[lowerCmd].action();
       if (Array.isArray(result)) {
         result.forEach((line) =>
-          this.output.push({ text: line, isCommand: false })
+          this.output.push({ text: line, isCommand: false }),
         );
       } else {
         this.output.push({ text: result, isCommand: false });
@@ -203,7 +203,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
       this.suggestions = Object.keys(this.commands);
     } else {
       const matches = Object.keys(this.commands).filter((cmd) =>
-        cmd.startsWith(input)
+        cmd.startsWith(input),
       );
       if (matches.length === 1) {
         this.currentCommand = matches[0];
@@ -220,7 +220,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
     this.historyIndex += direction;
     this.historyIndex = Math.max(
       0,
-      Math.min(this.historyIndex, this.commandHistory.length)
+      Math.min(this.historyIndex, this.commandHistory.length),
     );
 
     if (this.historyIndex < this.commandHistory.length) {
@@ -237,7 +237,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
     });
     helpText.push(
       '',
-      'Pro tip: Use TAB for autocomplete and ↑/↓ for command history'
+      'Pro tip: Use TAB for autocomplete and ↑/↓ for command history',
     );
     return helpText;
   }

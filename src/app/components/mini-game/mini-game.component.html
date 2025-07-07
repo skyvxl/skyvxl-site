@@ -25,21 +25,22 @@
   <canvas #gameCanvas class="game-canvas"></canvas>
 
   @if (!gameRunning && !gameOver) {
-  <div class="game-overlay">
-    <h3>Code Invaders</h3>
-    <p>Defend your code from bugs!</p>
-    <p class="controls-info">
-      Use ← → arrows to move<br />
-      Press SPACE to shoot
-    </p>
-    <button (click)="startGame()" class="start-btn">Start Game</button>
-  </div>
-  } @if (gameOver) {
-  <div class="game-overlay">
-    <h3>Game Over!</h3>
-    <p>Final Score: {{ score }}</p>
-    <p>You reached level {{ level }}</p>
-    <button (click)="resetGame()" class="start-btn">Play Again</button>
-  </div>
+    <div class="game-overlay">
+      <h3>Code Invaders</h3>
+      <p>Defend your code from bugs!</p>
+      <p class="controls-info">
+        Use ← → arrows to move<br />
+        Press SPACE to shoot
+      </p>
+      <button (click)="startGame()" class="start-btn">Start Game</button>
+    </div>
+  }
+  @if (gameOver) {
+    <div class="game-overlay">
+      <h3>Game Over!</h3>
+      <p>Final Score: {{ score }}</p>
+      <p>You reached level {{ level }}</p>
+      <button (click)="resetGame()" class="start-btn">Play Again</button>
+    </div>
   }
 </div>

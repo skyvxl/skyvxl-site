@@ -114,7 +114,7 @@ export class ThreeSceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
     starsGeometry.setAttribute(
       'position',
-      new THREE.Float32BufferAttribute(starsVertices, 3)
+      new THREE.Float32BufferAttribute(starsVertices, 3),
     );
     const stars = new THREE.Points(starsGeometry, starsMaterial);
     this.scene.add(stars);
@@ -184,7 +184,7 @@ export class ThreeSceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
     particlesGeometry.setAttribute(
       'position',
-      new THREE.BufferAttribute(posArray, 3)
+      new THREE.BufferAttribute(posArray, 3),
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
@@ -203,24 +203,30 @@ export class ThreeSceneComponent implements OnInit, AfterViewInit, OnDestroy {
     const container = this.sceneContainer.nativeElement;
 
     // Mouse events
-    container.addEventListener('mousedown', (e: { clientX: number; clientY: number; }) => {
-      this.mouseDown = true;
-      this.mouse.x = e.clientX;
-      this.mouse.y = e.clientY;
-    });
-
-    container.addEventListener('mousemove', (e: { clientX: number; clientY: number; }) => {
-      if (this.mouseDown) {
-        const deltaX = e.clientX - this.mouse.x;
-        const deltaY = e.clientY - this.mouse.y;
-
-        this.rotationSpeed.x = deltaY * 0.01;
-        this.rotationSpeed.y = deltaX * 0.01;
-
+    container.addEventListener(
+      'mousedown',
+      (e: { clientX: number; clientY: number }) => {
+        this.mouseDown = true;
         this.mouse.x = e.clientX;
         this.mouse.y = e.clientY;
-      }
-    });
+      },
+    );
+
+    container.addEventListener(
+      'mousemove',
+      (e: { clientX: number; clientY: number }) => {
+        if (this.mouseDown) {
+          const deltaX = e.clientX - this.mouse.x;
+          const deltaY = e.clientY - this.mouse.y;
+
+          this.rotationSpeed.x = deltaY * 0.01;
+          this.rotationSpeed.y = deltaX * 0.01;
+
+          this.mouse.x = e.clientX;
+          this.mouse.y = e.clientY;
+        }
+      },
+    );
 
     container.addEventListener('mouseup', () => {
       this.mouseDown = false;
@@ -231,14 +237,17 @@ export class ThreeSceneComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     // Wheel event for zoom
-    container.addEventListener('wheel', (e: { preventDefault: () => void; deltaY: number; }) => {
-      e.preventDefault();
-      this.camera.position.z += e.deltaY * 0.01;
-      this.camera.position.z = Math.max(
-        2,
-        Math.min(10, this.camera.position.z)
-      );
-    });
+    container.addEventListener(
+      'wheel',
+      (e: { preventDefault: () => void; deltaY: number }) => {
+        e.preventDefault();
+        this.camera.position.z += e.deltaY * 0.01;
+        this.camera.position.z = Math.max(
+          2,
+          Math.min(10, this.camera.position.z),
+        );
+      },
+    );
 
     // Window resize
     window.addEventListener('resize', () => {

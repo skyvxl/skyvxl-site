@@ -19,10 +19,14 @@ export class SecretCodeService {
   ];
   private currentSequence: string[] = [];
   private gameActive = false;
+  private audio: HTMLAudioElement;
 
   public onSecretCode = new Subject<void>();
 
   constructor() {
+    this.audio = new Audio('assets/secret.mp3');
+    this.audio.load();
+    this.audio.volume = 0.3;
     this.initializeListener();
   }
 
@@ -55,7 +59,7 @@ export class SecretCodeService {
     }
 
     return this.currentSequence.every(
-      (key, index) => key === this.konamiCode[index]
+      (key, index) => key === this.konamiCode[index],
     );
   }
 
@@ -125,28 +129,9 @@ export class SecretCodeService {
   }
 
   private playSecretSound() {
-    // Create a simple beep sound using Web Audio API
-    try {
-      const audioContext =
-        new (window as any).AudioContext() ||
-        (window as any).webkitAudioContext;
-      const ctx = new audioContext();
-
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
-
-      oscillator.frequency.value = 880; // A5 note
-      gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-
-      oscillator.start(ctx.currentTime);
-      oscillator.stop(ctx.currentTime + 0.5);
-    } catch (e) {
-      console.log('Audio not supported');
-    }
+    if (!this.audio) return;
+    this.audio.currentTime = 0;
+    this.audio.play().catch((err) => console.log('Audio play failed', err));
   }
 
   private showAchievement() {
@@ -201,11 +186,5 @@ export class SecretCodeService {
 
   isGameActive(): boolean {
     return this.gameActive;
-  }
-
-  // Additional secret codes can be added here
-  addCustomCode(_sequence: string[], _callback: () => void) {
-    // Implementation for custom codes
-    // TODO: Implement custom code functionality
   }
 }

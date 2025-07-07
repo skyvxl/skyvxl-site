@@ -6,6 +6,8 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
+  inject,
+  OnDestroy,
 } from '@angular/core';
 
 interface Skill {
@@ -25,11 +27,11 @@ interface Skill {
   styleUrl: './skills-map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SkillsMapComponent implements OnInit, AfterViewInit {
+export class SkillsMapComponent implements OnInit, AfterViewInit, OnDestroy {
+  private cdr = inject(ChangeDetectorRef);
+
   @ViewChild('skillsCanvas', { static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
-
-  constructor(private cdr: ChangeDetectorRef) {}
 
   skills: Skill[] = [
     // Frontend
@@ -177,7 +179,7 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
     if (this.filteredSkills.length === 0) return 0;
     const sum = this.filteredSkills.reduce(
       (acc, skill) => acc + skill.level,
-      0
+      0,
     );
     return Math.round(sum / this.filteredSkills.length);
   }
@@ -207,7 +209,6 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
 
     // Group skills by category
     const categoryGroups = this.groupByCategory();
-    let angleOffset = 0;
 
     Object.entries(categoryGroups).forEach(([category, skills], groupIndex) => {
       const angleStep = (Math.PI * 2) / Object.keys(categoryGroups).length;
@@ -223,15 +224,18 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private groupByCategory(): { [key: string]: Skill[] } {
-    return this.skills.reduce((groups, skill) => {
-      const category = skill.category;
-      if (!groups[category]) {
-        groups[category] = [];
-      }
-      groups[category].push(skill);
-      return groups;
-    }, {} as { [key: string]: Skill[] });
+  private groupByCategory(): Record<string, Skill[]> {
+    return this.skills.reduce(
+      (groups, skill) => {
+        const category = skill.category;
+        if (!groups[category]) {
+          groups[category] = [];
+        }
+        groups[category].push(skill);
+        return groups;
+      },
+      {} as Record<string, Skill[]>,
+    );
   }
 
   private setupCanvas() {
@@ -251,7 +255,7 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
       0,
       0,
       this.canvas.nativeElement.width,
-      this.canvas.nativeElement.height
+      this.canvas.nativeElement.height,
     );
 
     // Draw connections
@@ -274,16 +278,12 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
             const midX = (skill.x! + target.x!) / 2;
             const midY = (skill.y! + target.y!) / 2;
             const distance = Math.sqrt(
-              Math.pow(target.x! - skill.x!, 2) + Math.pow(target.y! - skill.y!, 2)
+              Math.pow(target.x! - skill.x!, 2) +
+                Math.pow(target.y! - skill.y!, 2),
             );
             const curve = Math.min(distance * 0.2, 50);
 
-            this.ctx.quadraticCurveTo(
-              midX,
-              midY - curve,
-              target.x,
-              target.y
-            );
+            this.ctx.quadraticCurveTo(midX, midY - curve, target.x, target.y);
 
             this.ctx.stroke();
           }
@@ -313,16 +313,12 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
           const midX = (this.hoveredSkill!.x + target.x) / 2;
           const midY = (this.hoveredSkill!.y + target.y) / 2;
           const distance = Math.sqrt(
-            Math.pow(target.x - this.hoveredSkill!.x, 2) + Math.pow(target.y - this.hoveredSkill!.y, 2)
+            Math.pow(target.x - this.hoveredSkill!.x, 2) +
+              Math.pow(target.y - this.hoveredSkill!.y, 2),
           );
           const curve = Math.min(distance * 0.2, 50);
 
-          this.ctx.quadraticCurveTo(
-            midX,
-            midY - curve,
-            target.x,
-            target.y
-          );
+          this.ctx.quadraticCurveTo(midX, midY - curve, target.x, target.y);
 
           this.ctx.stroke();
         }
@@ -366,13 +362,10 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
       const y = e.clientY - rect.top;
 
       // Find skill under cursor with better detection
-      const skill = this.filteredSkills.find(s => {
+      const skill = this.filteredSkills.find((s) => {
         if (!s.x || !s.y) return false;
         // Check if click is within skill node bounds
-        return (
-          x >= s.x - 60 && x <= s.x + 60 &&
-          y >= s.y - 25 && y <= s.y + 25
-        );
+        return x >= s.x - 60 && x <= s.x + 60 && y >= s.y - 25 && y <= s.y + 25;
       });
 
       if (skill) {
@@ -380,7 +373,7 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
         this.draggedSkill = skill;
         this.dragOffset = {
           x: x - skill.x!,
-          y: y - skill.y!
+          y: y - skill.y!,
         };
         container.style.cursor = 'grabbing';
       }
@@ -402,8 +395,14 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
             this.draggedSkill.y = y - this.dragOffset.y;
 
             // Keep skill within bounds
-            this.draggedSkill.x = Math.max(50, Math.min(container.offsetWidth - 50, this.draggedSkill.x));
-            this.draggedSkill.y = Math.max(50, Math.min(container.offsetHeight - 50, this.draggedSkill.y));
+            this.draggedSkill.x = Math.max(
+              50,
+              Math.min(container.offsetWidth - 50, this.draggedSkill.x),
+            );
+            this.draggedSkill.y = Math.max(
+              50,
+              Math.min(container.offsetHeight - 50, this.draggedSkill.y),
+            );
 
             // Force view update
             this.cdr.detectChanges();

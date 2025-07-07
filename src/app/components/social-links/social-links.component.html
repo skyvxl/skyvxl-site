@@ -1,30 +1,30 @@
 <div class="social-links-container">
   <div class="social-grid">
     @for (link of socialLinks; track $index; let i = $index) {
-    <a
-      [href]="link.url"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="social-card"
-      [style.animation-delay.ms]="i * 100"
-      (mouseenter)="hoveredLink = link"
-      (mouseleave)="hoveredLink = null"
-    >
-      <div class="card-content">
-        <div class="icon-wrapper" [style.background]="link.color + '20'">
-          @if (link.name !== 'Email') {
-          <i [class]="'fab fa-' + link.icon" [style.color]="link.color"></i>
-          } @else {
-          <i [class]="'fas fa-' + link.icon" [style.color]="link.color"></i>
-          }
+      <a
+        [href]="link.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-card"
+        [style.animation-delay.ms]="i * 100"
+        (mouseenter)="hoveredLink = link"
+        (mouseleave)="hoveredLink = null"
+      >
+        <div class="card-content">
+          <div class="icon-wrapper" [style.background]="link.color + '20'">
+            @if (link.name !== "Email") {
+              <i [class]="'fab fa-' + link.icon" [style.color]="link.color"></i>
+            } @else {
+              <i [class]="'fas fa-' + link.icon" [style.color]="link.color"></i>
+            }
+          </div>
+          <h3>{{ link.name }}</h3>
+          <p>{{ link.username || "Connect with me" }}</p>
+          <div class="hover-effect" [style.background]="link.color"></div>
         </div>
-        <h3>{{ link.name }}</h3>
-        <p>{{ link.username || "Connect with me" }}</p>
-        <div class="hover-effect" [style.background]="link.color"></div>
-      </div>
 
-      <div class="card-bg"></div>
-    </a>
+        <div class="card-bg"></div>
+      </a>
     }
   </div>
 
@@ -50,15 +50,16 @@
           <h4>{{ lanyardData?.d?.discord_user?.username }}</h4>
           <p class="status-text">
             @if (lanyardActivities.length > 0) {
-              @if (lanyardActivities.length == 1) {
-                {{ lanyardActivities[0].name }}: {{ lanyardActivities[0].state }}
-              } @else if(lanyardActivities[1].name === 'Spotify') {
+              @if (lanyardActivities.length === 1) {
+                {{ lanyardActivities[0].name }}:
+                {{ lanyardActivities[0].state }}
+              } @else if (lanyardActivities[1].name === "Spotify") {
                 <span>{{ lanyardActivities[1].details }}</span>
               } @else {
                 <span>{{ lanyardActivities[1].name }}</span>
               }
             } @else {
-            <span>Not currently active</span>
+              <span>Not currently active</span>
             }
           </p>
         </div>
@@ -75,68 +76,68 @@
 
   <!-- Contact Form Modal -->
   @if (showContactForm) {
-  <div class="contact-modal" (click)="closeModal($event)">
-    <div class="contact-form" (click)="$event.stopPropagation()">
-      <button class="close-btn" (click)="showContactForm = false">
-        <i class="fas fa-times"></i>
-      </button>
-
-      <h3 class="form-title">Get in Touch</h3>
-
-      <form (submit)="sendMessage($event)">
-        <div class="form-group">
-          <input
-            type="text"
-            placeholder="Your Name"
-            [(ngModel)]="contactForm.name"
-            name="name"
-            required
-            class="form-input"
-          />
-          <span class="input-border"></span>
-        </div>
-
-        <div class="form-group">
-          <input
-            type="email"
-            placeholder="Your Email"
-            [(ngModel)]="contactForm.email"
-            name="email"
-            required
-            class="form-input"
-          />
-          <span class="input-border"></span>
-        </div>
-
-        <div class="form-group">
-          <textarea
-            placeholder="Your Message"
-            [(ngModel)]="contactForm.message"
-            name="message"
-            rows="5"
-            required
-            class="form-input"
-            style="resize: none;"
-          ></textarea>
-          <span class="input-border"></span>
-        </div>
-
-        <button type="submit" class="submit-btn" [disabled]="sending">
-          @if (!sending) {
-          <span>Send Message</span>
-          } @else if (sending) {
-          <span>Sending...</span>
-          }
+    <div class="contact-modal" (click)="closeModal($event)">
+      <div class="contact-form" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="showContactForm = false">
+          <i class="fas fa-times"></i>
         </button>
-      </form>
 
-      @if (messageSent) {
-      <div class="form-success">
-        <i class="fas fa-check-circle"></i>
-        <p>Message sent successfully!</p>
+        <h3 class="form-title">Get in Touch</h3>
+
+        <form (submit)="sendMessage($event)">
+          <div class="form-group">
+            <input
+              type="text"
+              placeholder="Your Name"
+              [(ngModel)]="contactForm.name"
+              name="name"
+              required
+              class="form-input"
+            />
+            <span class="input-border"></span>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="email"
+              placeholder="Your Email"
+              [(ngModel)]="contactForm.email"
+              name="email"
+              required
+              class="form-input"
+            />
+            <span class="input-border"></span>
+          </div>
+
+          <div class="form-group">
+            <textarea
+              placeholder="Your Message"
+              [(ngModel)]="contactForm.message"
+              name="message"
+              rows="5"
+              required
+              class="form-input"
+              style="resize: none"
+            ></textarea>
+            <span class="input-border"></span>
+          </div>
+
+          <button type="submit" class="submit-btn" [disabled]="sending">
+            @if (!sending) {
+              <span>Send Message</span>
+            } @else if (sending) {
+              <span>Sending...</span>
+            }
+          </button>
+        </form>
+
+        @if (messageSent) {
+          <div class="form-success">
+            <i class="fas fa-check-circle"></i>
+            <p>Message sent successfully!</p>
+          </div>
+        }
       </div>
-      }
     </div>
-  </div>
   }
 </div>

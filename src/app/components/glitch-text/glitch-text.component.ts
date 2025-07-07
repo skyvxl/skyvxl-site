@@ -14,11 +14,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GlitchTextComponent implements OnInit, OnDestroy {
-  @Input() text: string = '';
-  @Input() scramble: boolean = false;
+  @Input() text = '';
+  @Input() scramble = false;
   @Input() variant: 'default' | 'error' | 'success' = 'default';
 
-  displayText: string = '';
+  displayText = '';
   private scrambleInterval?: number;
   private scrambleChars = '!<>-_\\/[]{}—=+*^?#________';
 

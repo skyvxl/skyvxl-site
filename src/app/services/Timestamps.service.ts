@@ -16,7 +16,7 @@ export class TimestampsService implements OnDestroy {
     return timer(0, 1000).pipe(
       takeUntil(this.destroy$),
       map(() => this.calculateElapsedTime(startTimestamp)),
-      map((seconds) => this.formatTime(seconds))
+      map((seconds) => this.formatTime(seconds)),
     );
   }
 
@@ -31,7 +31,7 @@ export class TimestampsService implements OnDestroy {
 
   getProgressPercentage(
     startTimestamp: number,
-    endTimestamp: number
+    endTimestamp: number,
   ): Observable<number> {
     return timer(0, 1000).pipe(
       takeUntil(this.destroy$),
@@ -40,7 +40,7 @@ export class TimestampsService implements OnDestroy {
         const elapsed = Date.now() - startTimestamp;
         const percentage = (elapsed / totalDuration) * 100;
         return Math.min(100, Math.max(0, percentage));
-      })
+      }),
     );
   }
 

@@ -25,7 +25,6 @@
   --text-secondary: #888888;
 }
 
-
 /* Particles Background */
 .particles-background {
   position: fixed;
@@ -140,7 +139,9 @@
     text-shadow: 0 0 10px var(--primary-color);
   }
   to {
-    text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+    text-shadow:
+      0 0 20px var(--primary-color),
+      0 0 30px var(--primary-color);
   }
 }
 

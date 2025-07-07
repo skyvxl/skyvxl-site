@@ -5,7 +5,6 @@ export interface Lanyard {
 }
 
 export interface D {
-  kv?: Kv;
   spotify?: null;
   discord_user?: DiscordUser;
   activities?: Activity[];
@@ -59,5 +58,3 @@ export interface AvatarDecorationData {
   asset?: string;
   sku_id?: number;
 }
-
-export interface Kv {}

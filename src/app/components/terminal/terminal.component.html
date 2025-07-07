@@ -11,9 +11,9 @@
   <div class="terminal-body" #terminalBody>
     <div class="terminal-output">
       @for (line of output; track $index) {
-      <div class="output-line" [class.command-line]="line.isCommand">
-        <span [innerHTML]="line.text"></span>
-      </div>
+        <div class="output-line" [class.command-line]="line.isCommand">
+          <span [innerHTML]="line.text"></span>
+        </div>
       }
     </div>
 
@@ -35,10 +35,10 @@
   </div>
 
   @if (suggestions.length > 0) {
-  <div class="terminal-suggestions">
-    @for (suggestion of suggestions; track $index) {
-    <span class="suggestion">{{ suggestion }}</span>
-    }
-  </div>
+    <div class="terminal-suggestions">
+      @for (suggestion of suggestions; track $index) {
+        <span class="suggestion">{{ suggestion }}</span>
+      }
+    </div>
   }
 </div>

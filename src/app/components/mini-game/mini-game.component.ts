@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { SecretCodeService } from '../../services/SecretCode.service';
 
 interface GameObject {
@@ -18,6 +25,8 @@ interface GameObject {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MiniGameComponent implements OnInit, OnDestroy {
+  private secretCodeService = inject(SecretCodeService);
+
   score = 0;
   lives = 3;
   level = 1;
@@ -35,11 +44,9 @@ export class MiniGameComponent implements OnInit, OnDestroy {
   private particles: GameObject[] = [];
 
   // Game state
-  private keys: { [key: string]: boolean } = {};
+  private keys: Record<string, boolean> = {};
   private lastShot = 0;
   private enemyDirection = 1;
-
-  constructor(private secretCodeService: SecretCodeService) {}
 
   ngOnInit() {
     this.setupCanvas();
@@ -55,7 +62,13 @@ export class MiniGameComponent implements OnInit, OnDestroy {
       this.keys[event.key] = true;
 
       // Prevent default behavior for game controls
-      if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      if (
+        event.key === ' ' ||
+        event.key === 'ArrowUp' ||
+        event.key === 'ArrowDown' ||
+        event.key === 'ArrowLeft' ||
+        event.key === 'ArrowRight'
+      ) {
         event.preventDefault();
       }
 
@@ -261,7 +274,7 @@ export class MiniGameComponent implements OnInit, OnDestroy {
             this.createExplosion(
               enemy.x + enemy.width / 2,
               enemy.y + enemy.height / 2,
-              enemy.color!
+              enemy.color!,
             );
 
             this.enemies.splice(j, 1);
@@ -279,7 +292,7 @@ export class MiniGameComponent implements OnInit, OnDestroy {
         this.createExplosion(
           this.player.x + this.player.width / 2,
           this.player.y + this.player.height / 2,
-          '#ff0000'
+          '#ff0000',
         );
 
         if (this.lives <= 0) {
@@ -310,7 +323,7 @@ export class MiniGameComponent implements OnInit, OnDestroy {
       this.player.x,
       this.player.y,
       this.player.width,
-      this.player.height
+      this.player.height,
     );
 
     // Draw player details

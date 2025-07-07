@@ -1,7 +1,4 @@
-<div
-  class="app-container dark-theme"
-  [class.matrix-mode]="isMatrixMode"
->
+<div class="app-container dark-theme" [class.matrix-mode]="isMatrixMode">
   <!-- Particle Background -->
   <div id="particles-js" class="particles-background"></div>
 
@@ -64,20 +61,20 @@
     </div>
     <div class="projects-grid">
       @for (project of projects; track $index) {
-      <div class="project-card" (click)="openProject(project)">
-        <div class="project-image">
-          <img [src]="project.image" [alt]="project.title" />
-          <div class="project-overlay">
-            <div class="tech-stack">
-              @for (tech of project.tech; track $index) {
-              <span class="tech-tag">{{ tech }}</span>
-              }
+        <div class="project-card" (click)="openProject(project)">
+          <div class="project-image">
+            <img [src]="project.image" [alt]="project.title" />
+            <div class="project-overlay">
+              <div class="tech-stack">
+                @for (tech of project.tech; track $index) {
+                  <span class="tech-tag">{{ tech }}</span>
+                }
+              </div>
             </div>
           </div>
+          <h3>{{ project.title }}</h3>
+          <p>{{ project.description }}</p>
         </div>
-        <h3>{{ project.title }}</h3>
-        <p>{{ project.description }}</p>
-      </div>
       }
     </div>
   </section>
@@ -104,25 +101,25 @@
 
   <!-- Easter Egg Modal -->
   @if (showEasterEgg) {
-  <div class="easter-egg-modal">
-    <div class="modal-content">
-      <h3>🎉 Achievement Unlocked!</h3>
-      <p>You found the secret code!</p>
-      <button (click)="showEasterEgg = false">Close</button>
+    <div class="easter-egg-modal">
+      <div class="modal-content">
+        <h3>🎉 Achievement Unlocked!</h3>
+        <p>You found the secret code!</p>
+        <button (click)="showEasterEgg = false">Close</button>
+      </div>
     </div>
-  </div>
   }
 
   <!-- Loading Screen -->
   @if (isLoading) {
-  <div class="loading-screen">
-    <div class="loading-text">
-      <span>INITIALIZING</span>
-      <span class="loading-dots">...</span>
+    <div class="loading-screen">
+      <div class="loading-text">
+        <span>INITIALIZING</span>
+        <span class="loading-dots">...</span>
+      </div>
+      <div class="loading-bar">
+        <div class="loading-progress" [style.width.%]="loadingProgress"></div>
+      </div>
     </div>
-    <div class="loading-bar">
-      <div class="loading-progress" [style.width.%]="loadingProgress"></div>
-    </div>
-  </div>
   }
 </div>
