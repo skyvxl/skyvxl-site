@@ -28,7 +28,7 @@ export class SocialLinksComponent implements OnInit {
   statusColor: string = '#43b581';
   percentage = 0;
   subscriptions$: Subscription[] = [];
-  apiUrl = 'https://camilo404.azurewebsites.net/v1/';
+  apiUrl = 'https://camilo404.azurewebsites.net/v1/'; // sorry for this, I couldn't find another free API
 
   socialLinks: SocialLink[] = [
     {
