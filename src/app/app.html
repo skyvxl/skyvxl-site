@@ -1,16 +1,11 @@
 <div
-  class="app-container"
-  [class.dark-theme]="isDarkTheme"
+  class="app-container dark-theme"
   [class.matrix-mode]="isMatrixMode"
 >
   <!-- Particle Background -->
   <div id="particles-js" class="particles-background"></div>
 
-  <!-- Custom Cursor -->
-  <div class="custom-cursor" [style.left.px]="cursorX" [style.top.px]="cursorY">
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-  </div>
+  <!-- Custom Cursor managed by CursorService -->
 
   <!-- Header with Glitch Effect -->
   <header class="cyber-header">
@@ -26,13 +21,6 @@
         Projects
       </button>
       <button (click)="scrollToSection('game')" class="nav-btn">Play</button>
-      <button (click)="toggleTheme()" class="nav-btn theme-toggle">
-        <i
-          class="fas"
-          [class.fa-sun]="!isDarkTheme"
-          [class.fa-moon]="isDarkTheme"
-        ></i>
-      </button>
     </nav>
   </header>
 

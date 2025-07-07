@@ -18,14 +18,13 @@
 
 .dark-theme {
   --primary-color: #00ff88;
+  --secondary-color: #ff0080;
   --bg-dark: #0a0a0a;
+  --bg-light: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
 }
 
-.light-theme {
-  --primary-color: #0088ff;
-  --bg-dark: #f0f0f0;
-  --text-primary: #1a1a1a;
-}
 
 /* Particles Background */
 .particles-background {
@@ -38,46 +37,9 @@
   opacity: 0.5;
 }
 
-/* Custom Cursor */
-.custom-cursor {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
-}
-
-.cursor-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--primary-color);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.cursor-outline {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border: 2px solid var(--primary-color);
-  border-radius: 50%;
-  top: -15px;
-  left: -15px;
-  animation: cursor-pulse 1.5s infinite;
-}
-
-@keyframes cursor-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.5);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+/* Custom Cursor handled by CursorService */
+* {
+  cursor: none !important;
 }
 
 /* Header */
@@ -317,9 +279,11 @@
   right: -2px;
   bottom: -2px;
   background: linear-gradient(
-    45deg,
-    var(--primary-color),
-    var(--secondary-color)
+    135deg,
+    var(--primary-color) 0%,
+    #00b894 30%,
+    #00cec9 70%,
+    var(--primary-color) 100%
   );
   z-index: -1;
   opacity: 0;
@@ -396,7 +360,7 @@
 .contact-section {
   padding: 100px 50px;
   text-align: center;
-  background: linear-gradient(to bottom, var(--bg-dark), var(--bg-light));
+  background: var(--bg-dark);
 }
 
 .secret-hint {

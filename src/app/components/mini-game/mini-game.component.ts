@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { SecretCodeService } from '../../services/SecretCode.service';
 
 interface GameObject {
   x: number;
@@ -37,7 +38,8 @@ export class MiniGameComponent implements OnInit, OnDestroy {
   private keys: { [key: string]: boolean } = {};
   private lastShot = 0;
   private enemyDirection = 1;
-  private enemyDropDistance = 0;
+
+  constructor(private secretCodeService: SecretCodeService) {}
 
   ngOnInit() {
     this.setupCanvas();
@@ -49,17 +51,25 @@ export class MiniGameComponent implements OnInit, OnDestroy {
 
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
-    this.keys[event.key] = true;
+    if (this.gameRunning) {
+      this.keys[event.key] = true;
 
-    if (event.key === ' ') {
-      event.preventDefault();
-      this.shoot();
+      // Prevent default behavior for game controls
+      if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+      }
+
+      if (event.key === ' ') {
+        this.shoot();
+      }
     }
   }
 
   @HostListener('window:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
-    this.keys[event.key] = false;
+    if (this.gameRunning) {
+      this.keys[event.key] = false;
+    }
   }
 
   private setupCanvas() {
@@ -84,6 +94,9 @@ export class MiniGameComponent implements OnInit, OnDestroy {
     this.bullets = [];
     this.particles = [];
 
+    // Enable secret code when game starts
+    this.secretCodeService.setGameActive(true);
+
     this.createEnemies();
     this.gameLoop();
   }
@@ -101,11 +114,15 @@ export class MiniGameComponent implements OnInit, OnDestroy {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
+    // Disable secret code when game is paused
+    this.secretCodeService.setGameActive(false);
   }
 
   resumeGame() {
     this.gameRunning = true;
     this.gameLoop();
+    // Re-enable secret code when game resumes
+    this.secretCodeService.setGameActive(true);
   }
 
   stopGame() {
@@ -113,6 +130,8 @@ export class MiniGameComponent implements OnInit, OnDestroy {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
+    // Disable secret code when game stops
+    this.secretCodeService.setGameActive(false);
   }
 
   resetGame() {
@@ -202,6 +221,7 @@ export class MiniGameComponent implements OnInit, OnDestroy {
       if (enemy.y + enemy.height >= this.player.y) {
         this.gameOver = true;
         this.gameRunning = false;
+        this.secretCodeService.setGameActive(false);
       }
     }
 
@@ -265,6 +285,7 @@ export class MiniGameComponent implements OnInit, OnDestroy {
         if (this.lives <= 0) {
           this.gameOver = true;
           this.gameRunning = false;
+          this.secretCodeService.setGameActive(false);
         }
       }
     }

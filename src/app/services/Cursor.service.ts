@@ -10,6 +10,7 @@ export class CursorService {
   public initCustomCursor() {
     // Hide default cursor
     document.documentElement.style.cursor = 'none';
+    document.body.style.cursor = 'none';
 
     // Create custom cursor elements
     this.cursor = document.createElement('div');
@@ -18,12 +19,13 @@ export class CursorService {
       position: fixed;
       width: 8px;
       height: 8px;
-      background: var(--primary-color);
+      background: #00ff88;
       border-radius: 50%;
       pointer-events: none;
       z-index: 10000;
-      transition: transform 0.1s;
+      transform: translate(-50%, -50%);
       mix-blend-mode: difference;
+      display: block;
     `;
 
     this.cursorOutline = document.createElement('div');
@@ -32,29 +34,31 @@ export class CursorService {
       position: fixed;
       width: 30px;
       height: 30px;
-      border: 2px solid var(--primary-color);
+      border: 2px solid #00ff88;
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
-      transition: all 0.1s;
       transform: translate(-50%, -50%);
+      display: block;
     `;
 
     document.body.appendChild(this.cursor);
     document.body.appendChild(this.cursorOutline);
 
-    // Track mouse movement
+    // Track mouse movement with requestAnimationFrame for smooth performance
     document.addEventListener('mousemove', (e) => {
-      if (this.cursor && this.cursorOutline) {
-        this.cursor.style.left = e.clientX + 'px';
-        this.cursor.style.top = e.clientY + 'px';
+      requestAnimationFrame(() => {
+        if (this.cursor && this.cursorOutline) {
+          this.cursor.style.left = e.clientX + 'px';
+          this.cursor.style.top = e.clientY + 'px';
 
-        this.cursorOutline.style.left = e.clientX + 'px';
-        this.cursorOutline.style.top = e.clientY + 'px';
-      }
+          this.cursorOutline.style.left = e.clientX + 'px';
+          this.cursorOutline.style.top = e.clientY + 'px';
+        }
+      });
     });
 
-    // Add hover effects
+    // Add click effects
     document.addEventListener('mousedown', () => {
       if (this.cursorOutline) {
         this.cursorOutline.style.transform = 'translate(-50%, -50%) scale(0.8)';
@@ -86,13 +90,13 @@ export class CursorService {
   private setHoverState(isHovering: boolean) {
     if (this.cursor && this.cursorOutline) {
       if (isHovering) {
-        this.cursor.style.transform = 'scale(1.5)';
+        this.cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
         this.cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        this.cursorOutline.style.borderColor = 'var(--secondary-color)';
+        this.cursorOutline.style.borderColor = '#ff0080';
       } else {
-        this.cursor.style.transform = 'scale(1)';
+        this.cursor.style.transform = 'translate(-50%, -50%) scale(1)';
         this.cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-        this.cursorOutline.style.borderColor = 'var(--primary-color)';
+        this.cursorOutline.style.borderColor = '#00ff88';
       }
     }
   }

@@ -23,6 +23,7 @@
         [style.left.px]="skill.x"
         [style.top.px]="skill.y"
         [class.highlighted]="hoveredSkill === skill"
+        [class.dragging]="isDragging && draggedSkill === skill"
         (mouseenter)="onSkillHover(skill)"
         (mouseleave)="onSkillLeave()"
       >

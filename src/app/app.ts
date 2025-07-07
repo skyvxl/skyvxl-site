@@ -1,6 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TerminalComponent } from './components/terminal/terminal.component';
-import { ThemeService } from './services/Theme.service';
 import { SecretCodeService } from './services/SecretCode.service';
 import { ThreeSceneComponent } from './components/three-scene/three-scene.component';
 import { SkillsMapComponent } from './components/skills-map/skills-map.component';
@@ -22,15 +21,11 @@ import { CursorService } from './services/Cursor.service';
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App implements OnInit {
-  isDarkTheme = true;
+export class App implements OnInit, OnDestroy {
   isMatrixMode = false;
   showEasterEgg = false;
   isLoading = true;
   loadingProgress = 0;
-
-  cursorX = 0;
-  cursorY = 0;
 
   typedText = '';
   currentAsciiArt = '';
@@ -39,16 +34,16 @@ export class App implements OnInit {
     {
       title: 'Portfolio Website',
       description: 'Interactive visualization of portfolio items',
-      image: 'assets/project1.jpg',
+      image: 'assets/project1.png',
       tech: ['Three.js', 'Angular', 'TypeScript'],
       link: 'github.com/skyvxl/skyvxl-site',
     },
     {
       title: 'React 3D Constructor',
       description: 'A 3D constructor built with React and Three.js',
-      image: 'assets/project2.jpg',
-      tech: ['React', 'Three.js', 'TypeScript'],
-      link: '',
+      image: 'assets/project2.png',
+      tech: ['React', 'Three.js', 'TypeScript', 'Tailwind CSS'],
+      link: 'github.com/skyvxl/',
     },
   ];
 
@@ -82,8 +77,8 @@ export class App implements OnInit {
   ];
 
   constructor(
-    private themeService: ThemeService,
-    private secretCodeService: SecretCodeService
+    private secretCodeService: SecretCodeService,
+    private cursorService: CursorService
   ) {}
 
   ngOnInit() {
@@ -91,18 +86,20 @@ export class App implements OnInit {
     this.startTypingAnimation();
     this.startAsciiAnimation();
 
+    // Initialize custom cursor
+    this.cursorService.initCustomCursor();
+
     // Subscribe to secret code detection
     this.secretCodeService.onSecretCode.subscribe(() => {
       this.showEasterEgg = true;
       this.isMatrixMode = true;
       setTimeout(() => (this.isMatrixMode = false), 5000);
     });
-  }
 
-  @HostListener('mousemove', ['$event'])
-  onMouseMove(event: MouseEvent) {
-    this.cursorX = event.clientX;
-    this.cursorY = event.clientY;
+    // Ensure page starts at top
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
   }
 
   private initializeApp() {
@@ -117,11 +114,6 @@ export class App implements OnInit {
         }, 500);
       }
     }, 200);
-
-    // Set theme based on time
-    const hour = new Date().getHours();
-    this.isDarkTheme = hour < 6 || hour >= 18;
-    this.themeService.setTheme(this.isDarkTheme ? 'dark' : 'light');
   }
 
   private startTypingAnimation() {
@@ -165,11 +157,6 @@ export class App implements OnInit {
     }, 3000);
   }
 
-  toggleTheme() {
-    this.isDarkTheme = !this.isDarkTheme;
-    this.themeService.setTheme(this.isDarkTheme ? 'dark' : 'light');
-  }
-
   scrollToSection(sectionId: string) {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -178,6 +165,10 @@ export class App implements OnInit {
   }
 
   openProject(project: any) {
-    window.open(project.link, '_blank');
+    window.open('https://' + project.link, '_blank');
+  }
+
+  ngOnDestroy() {
+    this.cursorService.destroy();
   }
 }

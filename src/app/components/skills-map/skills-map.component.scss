@@ -64,9 +64,18 @@ canvas {
 .skill-node {
   position: absolute;
   transform: translate(-50%, -50%);
-  cursor: pointer;
+  cursor: grab;
   transition: all 0.3s;
   z-index: 10;
+  user-select: none;
+}
+
+.skill-node:active {
+  cursor: grabbing;
+}
+
+.skill-node.dragging {
+  transition: none !important;
 }
 
 .skill-content {
@@ -105,8 +114,10 @@ canvas {
   height: 100%;
   background: linear-gradient(
     90deg,
-    var(--secondary-color),
-    var(--primary-color)
+    #004d40 0%,
+    #00695c 30%,
+    #00796b 70%,
+    var(--primary-color) 100%
   );
   transition: width 0.3s;
   box-shadow: 0 0 10px var(--primary-color);

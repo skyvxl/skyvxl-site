@@ -114,11 +114,12 @@ export class TerminalComponent implements OnInit, AfterViewInit {
       description: 'Brew some coffee',
       action: () => "☕ Brewing coffee... Done! Here's your virtual coffee!",
     },
-    'rm -rf': {
-      name: 'rm -rf',
+    rm: {
+      name: 'rm',
       description: 'Dangerously remove everything (…or not)',
       action: () => [
-        '❌ rm -rf: command not found. Did you mean "help"?',
+        '❌ Hah! Nice try, but you can\'t delete my code that easily!',
+        '    Type "sudo rm -rf /" if you dare (but I won\'t let you)!',
       ],
     },
   };
@@ -343,6 +344,8 @@ export class TerminalComponent implements OnInit, AfterViewInit {
         return this.showAbout();
       case 'contact.md':
         return this.showContact();
+      case 'skills.json':
+        return this.showSkills();
       case 'resume.pdf':
         return '📄 Opening resume.pdf... (This would download/open the actual file)';
       default:

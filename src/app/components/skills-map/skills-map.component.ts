@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
@@ -28,6 +29,8 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
   @ViewChild('skillsCanvas', { static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   skills: Skill[] = [
     // Frontend
     {
@@ -35,28 +38,28 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
       level: 40,
       category: 'Frontend',
       connections: ['TypeScript', 'RxJS'],
-      description: 'Expert level with Angular framework',
+      description: 'Angular framework',
     },
     {
       name: 'React',
       level: 50,
       category: 'Frontend',
       connections: ['TypeScript', 'Redux'],
-      description: 'Strong experience with React ecosystem',
+      description: 'React ecosystem',
     },
     {
       name: 'Vue.js',
       level: 50,
       category: 'Frontend',
       connections: ['TypeScript'],
-      description: 'Proficient in Vue.js development',
+      description: 'Vue.js development',
     },
     {
       name: 'TypeScript',
       level: 60,
       category: 'Frontend',
       connections: ['JavaScript'],
-      description: 'Advanced TypeScript skills',
+      description: 'TypeScript skills',
     },
     {
       name: 'Three.js',
@@ -115,10 +118,10 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
     // DevOps
     {
       name: 'Docker',
-      level: 50,
+      level: 40,
       category: 'DevOps',
       connections: [],
-      description: 'Containerization expert',
+      description: 'Containerization',
     },
     {
       name: 'CI/CD',
@@ -161,6 +164,10 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
 
   private ctx!: CanvasRenderingContext2D;
   private animationFrame!: number;
+  isDragging = false;
+  draggedSkill: Skill | null = null;
+  private dragOffset = { x: 0, y: 0 };
+  private rafId: number | null = null;
 
   get totalSkills(): number {
     return this.filteredSkills.length;
@@ -190,6 +197,7 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.setupCanvas();
     this.animate();
+    this.setupDragListeners();
   }
 
   private positionSkills() {
@@ -262,15 +270,17 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
             this.ctx.beginPath();
             this.ctx.moveTo(skill.x!, skill.y!);
 
-            // Create curved connection
+            // Create smooth curved connection with consistent offset
             const midX = (skill.x! + target.x!) / 2;
             const midY = (skill.y! + target.y!) / 2;
-            const offsetX = (Math.random() - 0.5) * 50;
-            const offsetY = (Math.random() - 0.5) * 50;
+            const distance = Math.sqrt(
+              Math.pow(target.x! - skill.x!, 2) + Math.pow(target.y! - skill.y!, 2)
+            );
+            const curve = Math.min(distance * 0.2, 50);
 
             this.ctx.quadraticCurveTo(
-              midX + offsetX,
-              midY + offsetY,
+              midX,
+              midY - curve,
               target.x,
               target.y
             );
@@ -285,6 +295,8 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
     if (this.hoveredSkill && this.hoveredSkill.connections) {
       this.ctx.strokeStyle = 'rgba(0, 255, 136, 0.8)';
       this.ctx.lineWidth = 2;
+      this.ctx.shadowBlur = 10;
+      this.ctx.shadowColor = '#00ff88';
 
       this.hoveredSkill.connections.forEach((targetName) => {
         const target = this.filteredSkills.find((s) => s.name === targetName);
@@ -297,10 +309,26 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
         ) {
           this.ctx.beginPath();
           this.ctx.moveTo(this.hoveredSkill!.x, this.hoveredSkill!.y);
-          this.ctx.lineTo(target.x, target.y);
+
+          const midX = (this.hoveredSkill!.x + target.x) / 2;
+          const midY = (this.hoveredSkill!.y + target.y) / 2;
+          const distance = Math.sqrt(
+            Math.pow(target.x - this.hoveredSkill!.x, 2) + Math.pow(target.y - this.hoveredSkill!.y, 2)
+          );
+          const curve = Math.min(distance * 0.2, 50);
+
+          this.ctx.quadraticCurveTo(
+            midX,
+            midY - curve,
+            target.x,
+            target.y
+          );
+
           this.ctx.stroke();
         }
       });
+
+      this.ctx.shadowBlur = 0;
     }
   }
 
@@ -314,15 +342,95 @@ export class SkillsMapComponent implements OnInit, AfterViewInit {
   }
 
   onSkillHover(skill: Skill) {
-    this.hoveredSkill = skill;
-    if (skill.x && skill.y) {
-      this.tooltipX = skill.x + 20;
-      this.tooltipY = skill.y - 50;
+    if (!this.isDragging) {
+      this.hoveredSkill = skill;
+      if (skill.x && skill.y) {
+        this.tooltipX = skill.x + 20;
+        this.tooltipY = skill.y - 50;
+      }
     }
   }
 
   onSkillLeave() {
-    this.hoveredSkill = null;
+    if (!this.isDragging) {
+      this.hoveredSkill = null;
+    }
+  }
+
+  private setupDragListeners() {
+    const container = this.canvas.nativeElement.parentElement!;
+
+    container.addEventListener('mousedown', (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Find skill under cursor with better detection
+      const skill = this.filteredSkills.find(s => {
+        if (!s.x || !s.y) return false;
+        // Check if click is within skill node bounds
+        return (
+          x >= s.x - 60 && x <= s.x + 60 &&
+          y >= s.y - 25 && y <= s.y + 25
+        );
+      });
+
+      if (skill) {
+        this.isDragging = true;
+        this.draggedSkill = skill;
+        this.dragOffset = {
+          x: x - skill.x!,
+          y: y - skill.y!
+        };
+        container.style.cursor = 'grabbing';
+      }
+    });
+
+    container.addEventListener('mousemove', (e) => {
+      if (this.isDragging && this.draggedSkill) {
+        if (this.rafId) {
+          cancelAnimationFrame(this.rafId);
+        }
+
+        this.rafId = requestAnimationFrame(() => {
+          if (this.draggedSkill) {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            this.draggedSkill.x = x - this.dragOffset.x;
+            this.draggedSkill.y = y - this.dragOffset.y;
+
+            // Keep skill within bounds
+            this.draggedSkill.x = Math.max(50, Math.min(container.offsetWidth - 50, this.draggedSkill.x));
+            this.draggedSkill.y = Math.max(50, Math.min(container.offsetHeight - 50, this.draggedSkill.y));
+
+            // Force view update
+            this.cdr.detectChanges();
+          }
+        });
+      }
+    });
+
+    container.addEventListener('mouseup', () => {
+      this.isDragging = false;
+      this.draggedSkill = null;
+      container.style.cursor = 'default';
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+    });
+
+    container.addEventListener('mouseleave', () => {
+      this.isDragging = false;
+      this.draggedSkill = null;
+      container.style.cursor = 'default';
+      if (this.rafId) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+    });
   }
 
   ngOnDestroy() {

@@ -18,6 +18,7 @@ export class SecretCodeService {
     'a',
   ];
   private currentSequence: string[] = [];
+  private gameActive = false;
 
   public onSecretCode = new Subject<void>();
 
@@ -27,6 +28,11 @@ export class SecretCodeService {
 
   private initializeListener() {
     window.addEventListener('keydown', (event) => {
+      // Only process the secret code if the game is active
+      if (!this.gameActive) {
+        return;
+      }
+
       this.currentSequence.push(event.key);
 
       // Keep only the last N keys where N is the length of the code
@@ -185,8 +191,21 @@ export class SecretCodeService {
     }, 3000);
   }
 
+  // Methods to control when the secret code is active
+  setGameActive(active: boolean) {
+    this.gameActive = active;
+    if (!active) {
+      this.currentSequence = []; // Clear sequence when game becomes inactive
+    }
+  }
+
+  isGameActive(): boolean {
+    return this.gameActive;
+  }
+
   // Additional secret codes can be added here
-  addCustomCode(sequence: string[], callback: () => void) {
+  addCustomCode(_sequence: string[], _callback: () => void) {
     // Implementation for custom codes
+    // TODO: Implement custom code functionality
   }
 }
