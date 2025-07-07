@@ -61,7 +61,17 @@
     </div>
     <div class="projects-grid">
       @for (project of projects; track $index) {
-        <div class="project-card" (click)="openProject(project)">
+        <div
+          class="project-card"
+          tabindex="0"
+          (click)="openProject(project)"
+          (keydown)="
+            ($event.key === 'Enter' || $event.key === ' ') &&
+              openProject(project)
+          "
+          role="button"
+          aria-pressed="false"
+        >
           <div class="project-image">
             <img [src]="project.image" [alt]="project.title" />
             <div class="project-overlay">

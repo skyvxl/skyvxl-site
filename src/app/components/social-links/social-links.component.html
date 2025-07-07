@@ -76,9 +76,23 @@
 
   <!-- Contact Form Modal -->
   @if (showContactForm) {
-    <div class="contact-modal" (click)="closeModal($event)">
-      <div class="contact-form" (click)="$event.stopPropagation()">
-        <button class="close-btn" (click)="showContactForm = false">
+    <div
+      class="contact-modal"
+      (click)="closeModal($event)"
+      (keyup.enter)="closeModal($event)"
+      tabindex="0"
+    >
+      <div
+        class="contact-form"
+        (click)="$event.stopPropagation()"
+        (keyup.enter)="$event.stopPropagation()"
+        tabindex="0"
+      >
+        <button
+          class="close-btn"
+          (click)="showContactForm = false"
+          (keyup.enter)="showContactForm = false"
+        >
           <i class="fas fa-times"></i>
         </button>
 
